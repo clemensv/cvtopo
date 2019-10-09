@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_cvtoponeu_name": {
+            "value": null
+        },
+        "sites_cvtopoweu_name": {
+            "value": null
+        },
+        "components_cvtoponeu_name": {
+            "value": null
+        },
+        "components_cvtopoweu_name": {
+            "value": null
+        },
+        "serverfarms_WestEuropePlan_name": {
+            "value": null
+        },
+        "namespaces_cvtoponeu_name": {
+            "value": null
+        },
+        "namespaces_cvtopoweu_name": {
+            "value": null
+        },
+        "serverfarms_ASP_cvtopo_8ada_name": {
+            "value": null
+        },
+        "storageAccounts_cvtoponeu_name": {
+            "value": null
+        },
+        "storageAccounts_cvtopoweu_name": {
+            "value": null
+        },
+        "userAssignedIdentities_cvtopo_name": {
+            "value": null
+        },
+        "actionGroups_Application%20Insights%20Smart%20Detection_name": {
+            "value": null
+        }
+    }
+}
