@@ -77,7 +77,7 @@ namespace AzureServiceBusController
                                     break;
                                 case "subscription":
                                     // if the topic doesn't exist, we'll create it 
-                                    await CreateTopicIfNotExist(mc, name);
+                                    await CreateTopicIfNotExist(mc, topic);
                                     if (!await mc.SubscriptionExistsAsync(topic, name))
                                     {
                                         await mc.CreateSubscriptionAsync(topic, name);
@@ -85,7 +85,7 @@ namespace AzureServiceBusController
                                     break;
                                 case "link":
                                     // if the topic doesn't exist, we'll create it 
-                                    await CreateTopicIfNotExist(mc, name);
+                                    await CreateTopicIfNotExist(mc, topic);
                                     if (!await mc.SubscriptionExistsAsync(topic, name) &&
                                         await mc.QueueExistsAsync(name))
                                     {
