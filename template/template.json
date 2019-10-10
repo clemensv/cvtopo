@@ -10,6 +10,14 @@
             "defaultValue": "cvtopoweu",
             "type": "String"
         },
+        "serverfarms_cvtoponeu_name": {
+            "defaultValue": "cvtoponeu",
+            "type": "String"
+        },
+        "serverfarms_cvtopoweu_name": {
+            "defaultValue": "cvtopoweu",
+            "type": "String"
+        },
         "components_cvtoponeu_name": {
             "defaultValue": "cvtoponeu",
             "type": "String"
@@ -18,20 +26,12 @@
             "defaultValue": "cvtopoweu",
             "type": "String"
         },
-        "serverfarms_WestEuropePlan_name": {
-            "defaultValue": "WestEuropePlan",
-            "type": "String"
-        },
         "namespaces_cvtoponeu_name": {
             "defaultValue": "cvtoponeu",
             "type": "String"
         },
         "namespaces_cvtopoweu_name": {
             "defaultValue": "cvtopoweu",
-            "type": "String"
-        },
-        "serverfarms_ASP_cvtopo_8ada_name": {
-            "defaultValue": "ASP-cvtopo-8ada",
             "type": "String"
         },
         "storageAccounts_cvtoponeu_name": {
@@ -198,18 +198,18 @@
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2016-09-01",
-            "name": "[parameters('serverfarms_ASP_cvtopo_8ada_name')]",
+            "name": "[parameters('serverfarms_cvtoponeu_name')]",
             "location": "North Europe",
             "sku": {
-                "name": "Y1",
-                "tier": "Dynamic",
-                "size": "Y1",
-                "family": "Y",
-                "capacity": 0
+                "name": "EP1",
+                "tier": "ElasticPremium",
+                "size": "EP1",
+                "family": "EP",
+                "capacity": 1
             },
-            "kind": "functionapp",
+            "kind": "elastic",
             "properties": {
-                "name": "[parameters('serverfarms_ASP_cvtopo_8ada_name')]",
+                "name": "[parameters('serverfarms_cvtoponeu_name')]",
                 "perSiteScaling": false,
                 "reserved": false,
                 "targetWorkerCount": 0,
@@ -219,18 +219,18 @@
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2016-09-01",
-            "name": "[parameters('serverfarms_WestEuropePlan_name')]",
+            "name": "[parameters('serverfarms_cvtopoweu_name')]",
             "location": "West Europe",
             "sku": {
-                "name": "Y1",
-                "tier": "Dynamic",
-                "size": "Y1",
-                "family": "Y",
-                "capacity": 0
+                "name": "EP1",
+                "tier": "ElasticPremium",
+                "size": "EP1",
+                "family": "EP",
+                "capacity": 1
             },
-            "kind": "functionapp",
+            "kind": "elastic",
             "properties": {
-                "name": "[parameters('serverfarms_WestEuropePlan_name')]",
+                "name": "[parameters('serverfarms_cvtopoweu_name')]",
                 "perSiteScaling": false,
                 "reserved": false,
                 "targetWorkerCount": 0,
@@ -300,10 +300,130 @@
         {
             "type": "Microsoft.ServiceBus/namespaces/queues",
             "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/aa')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": true,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/aa')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": true,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2017-04-01",
             "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/dl')]",
             "location": "North Europe",
             "dependsOn": [
                 "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": true,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/dl')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
             ],
             "properties": {
                 "lockDuration": "PT1M",
@@ -340,6 +460,366 @@
                 "duplicateDetectionHistoryTimeWindow": "PT10M",
                 "maxDeliveryCount": 10,
                 "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/lh')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": true,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a10')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a10')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a11')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a11')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a12')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a12')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a13')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a13')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b10')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b10')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b11')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b11')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b12')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b12')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b13')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b13')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
                 "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
                 "enablePartitioning": false,
                 "enableExpress": false
@@ -425,7 +905,7 @@
             "name": "[parameters('sites_cvtoponeu_name')]",
             "location": "North Europe",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_cvtopo_8ada_name'))]"
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_cvtoponeu_name'))]"
             ],
             "kind": "functionapp",
             "identity": {
@@ -453,7 +933,7 @@
                         "hostType": "Repository"
                     }
                 ],
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_cvtopo_8ada_name'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_cvtoponeu_name'))]",
                 "reserved": false,
                 "scmSiteAlsoStopped": false,
                 "clientAffinityEnabled": true,
@@ -470,7 +950,7 @@
             "name": "[parameters('sites_cvtopoweu_name')]",
             "location": "West Europe",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_WestEuropePlan_name'))]"
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_cvtopoweu_name'))]"
             ],
             "kind": "functionapp",
             "identity": {
@@ -498,7 +978,7 @@
                         "hostType": "Repository"
                     }
                 ],
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_WestEuropePlan_name'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_cvtopoweu_name'))]",
                 "reserved": false,
                 "scmSiteAlsoStopped": false,
                 "clientAffinityEnabled": false,
@@ -544,14 +1024,14 @@
                 "scmType": "None",
                 "use32BitWorkerProcess": true,
                 "webSocketsEnabled": false,
-                "alwaysOn": false,
+                "alwaysOn": true,
                 "appCommandLine": "",
                 "managedPipelineMode": "Integrated",
                 "virtualApplications": [
                     {
                         "virtualPath": "/",
                         "physicalPath": "site\\wwwroot",
-                        "preloadEnabled": false,
+                        "preloadEnabled": true,
                         "virtualDirectories": null
                     }
                 ],
@@ -606,7 +1086,7 @@
                 "http20Enabled": false,
                 "minTlsVersion": "1.2",
                 "ftpsState": "AllAllowed",
-                "reservedInstanceCount": 0,
+                "reservedInstanceCount": 1,
                 "fileChangeAuditEnabled": false
             }
         },
@@ -636,7 +1116,8 @@
                 "nodeVersion": "",
                 "linuxFxVersion": "",
                 "requestTracingEnabled": false,
-                "remoteDebuggingEnabled": false,
+                "remoteDebuggingEnabled": true,
+                "remoteDebuggingVersion": "VS2019",
                 "httpLoggingEnabled": false,
                 "logsDirectorySizeLimit": 35,
                 "detailedErrorLoggingEnabled": false,
@@ -644,14 +1125,14 @@
                 "scmType": "None",
                 "use32BitWorkerProcess": true,
                 "webSocketsEnabled": false,
-                "alwaysOn": false,
+                "alwaysOn": true,
                 "appCommandLine": "",
                 "managedPipelineMode": "Integrated",
                 "virtualApplications": [
                     {
                         "virtualPath": "/",
                         "physicalPath": "site\\wwwroot",
-                        "preloadEnabled": false,
+                        "preloadEnabled": true,
                         "virtualDirectories": null
                     }
                 ],
@@ -706,7 +1187,7 @@
                 "http20Enabled": false,
                 "minTlsVersion": "1.2",
                 "ftpsState": "AllAllowed",
-                "reservedInstanceCount": 0,
+                "reservedInstanceCount": 1,
                 "fileChangeAuditEnabled": false
             }
         },
@@ -733,20 +1214,20 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2016-08-01",
-            "name": "[concat(parameters('sites_cvtopoweu_name'), '/21bd77d8e2e94a54a637df7fb188c90d')]",
+            "name": "[concat(parameters('sites_cvtopoweu_name'), '/3ad872796f624c649e262de477c1b2be')]",
             "location": "West Europe",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('sites_cvtopoweu_name'))]"
             ],
             "properties": {
-                "id": "21bd77d8e2e94a54a637df7fb188c90d",
+                "id": "3ad872796f624c649e262de477c1b2be",
                 "status": 4,
                 "author_email": "N/A",
                 "author": "N/A",
                 "deployer": "Push-Deployer",
                 "message": "Created via a push deployment",
-                "start_time": "2019-10-09T10:59:23.4874587Z",
-                "end_time": "2019-10-09T10:59:28.9726547Z",
+                "start_time": "2019-10-09T16:59:48.37024Z",
+                "end_time": "2019-10-09T16:59:53.081876Z",
                 "active": false
             }
         },
@@ -773,20 +1254,20 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2016-08-01",
-            "name": "[concat(parameters('sites_cvtopoweu_name'), '/3ed79235570841f2bf65fa39172d0b8d')]",
-            "location": "West Europe",
+            "name": "[concat(parameters('sites_cvtoponeu_name'), '/4355c5c5557849068355ca3956f20f4f')]",
+            "location": "North Europe",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_cvtopoweu_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_cvtoponeu_name'))]"
             ],
             "properties": {
-                "id": "3ed79235570841f2bf65fa39172d0b8d",
+                "id": "4355c5c5557849068355ca3956f20f4f",
                 "status": 4,
                 "author_email": "N/A",
                 "author": "N/A",
                 "deployer": "Push-Deployer",
                 "message": "Created via a push deployment",
-                "start_time": "2019-10-09T11:39:39.6184979Z",
-                "end_time": "2019-10-09T11:39:44.3779013Z",
+                "start_time": "2019-10-09T16:01:44.3544418Z",
+                "end_time": "2019-10-09T16:01:48.6323668Z",
                 "active": false
             }
         },
@@ -827,7 +1308,47 @@
                 "message": "Created via a push deployment",
                 "start_time": "2019-10-09T14:57:14.2848901Z",
                 "end_time": "2019-10-09T14:57:23.3119508Z",
-                "active": true
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('sites_cvtoponeu_name'), '/753508141bfd4b33ae0ee734296eae38')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "id": "753508141bfd4b33ae0ee734296eae38",
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2019-10-09T16:53:13.0963491Z",
+                "end_time": "2019-10-09T16:53:21.7246348Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('sites_cvtopoweu_name'), '/769e791beccf4c6484f4648c99845bbe')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "id": "769e791beccf4c6484f4648c99845bbe",
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2019-10-09T16:01:09.9081907Z",
+                "end_time": "2019-10-09T16:01:13.920577Z",
+                "active": false
             }
         },
         {
@@ -847,6 +1368,66 @@
                 "message": "Created via a push deployment",
                 "start_time": "2019-10-09T12:56:40.0727801Z",
                 "end_time": "2019-10-09T12:56:45.1147155Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('sites_cvtoponeu_name'), '/7cedfb7df9a049248299dbe25c5dc028')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "id": "7cedfb7df9a049248299dbe25c5dc028",
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2019-10-09T17:01:48.3468379Z",
+                "end_time": "2019-10-09T17:01:55.057775Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('sites_cvtopoweu_name'), '/8c8efa595b944e39ba1c9abfddec0491')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "id": "8c8efa595b944e39ba1c9abfddec0491",
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2019-10-09T18:47:13.4929002Z",
+                "end_time": "2019-10-09T18:47:19.7969224Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('sites_cvtoponeu_name'), '/9b25c8c4b2f4403280bb8eb49c95674b')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "id": "9b25c8c4b2f4403280bb8eb49c95674b",
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2019-10-09T18:12:40.1787182Z",
+                "end_time": "2019-10-09T18:12:46.8342977Z",
                 "active": false
             }
         },
@@ -907,6 +1488,26 @@
                 "message": "Created via a push deployment",
                 "start_time": "2019-10-09T14:56:39.3792755Z",
                 "end_time": "2019-10-09T14:56:44.7466373Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('sites_cvtoponeu_name'), '/d980fcaddd96476eb69afdc9cb8570b3')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "id": "d980fcaddd96476eb69afdc9cb8570b3",
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2019-10-09T18:45:57.7924911Z",
+                "end_time": "2019-10-09T18:46:05.9123144Z",
                 "active": true
             }
         },
@@ -953,20 +1554,20 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2016-08-01",
-            "name": "[concat(parameters('sites_cvtopoweu_name'), '/ea39f4ed170e478ebc9242979f4fffea')]",
+            "name": "[concat(parameters('sites_cvtopoweu_name'), '/eab484df107b4b8e944d16fff7e3d8f0')]",
             "location": "West Europe",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('sites_cvtopoweu_name'))]"
             ],
             "properties": {
-                "id": "ea39f4ed170e478ebc9242979f4fffea",
+                "id": "eab484df107b4b8e944d16fff7e3d8f0",
                 "status": 4,
                 "author_email": "N/A",
                 "author": "N/A",
                 "deployer": "Push-Deployer",
                 "message": "Created via a push deployment",
-                "start_time": "2019-10-09T11:41:55.9116123Z",
-                "end_time": "2019-10-09T11:42:00.3810694Z",
+                "start_time": "2019-10-09T16:54:07.2760204Z",
+                "end_time": "2019-10-09T16:54:15.0155194Z",
                 "active": false
             }
         },
@@ -994,6 +1595,490 @@
             "properties": {
                 "siteName": "cvtopoweu",
                 "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b10/aa')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "aa"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b11/aa')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "aa"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b12/aa')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "aa"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b10/aa')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "aa"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b11/aa')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "aa"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b12/aa')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "aa"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a10/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a11/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a12/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a13/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a13')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b10/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b11/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b12/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b13/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b13')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a10/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a11/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a12/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a13/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a13')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b10/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b11/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b12/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b13/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b13')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "bridge"
             }
         },
         {
@@ -1036,6 +2121,138 @@
                 "status": "Active",
                 "enableBatchedOperations": false,
                 "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a10/lh')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "lh"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a11/lh')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "lh"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a12/lh')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "lh"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a10/lh')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "lh"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a11/lh')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "lh"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a12/lh')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": true,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardTo": "lh"
             }
         },
         {
@@ -1131,12 +2348,240 @@
         {
             "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
             "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a10/lh/$Default')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'a10', 'lh')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a11/lh/$Default')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'a11', 'lh')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a12/lh/$Default')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'a12', 'lh')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b10/aa/$Default')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'b10', 'aa')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b11/aa/$Default')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'b11', 'aa')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b12/aa/$Default')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'b12', 'aa')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
             "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/control/cmd/$Default')]",
             "location": "North Europe",
             "dependsOn": [
                 "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'control', 'cmd')]",
                 "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'control')]",
                 "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a10/lh/$Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'a10', 'lh')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a11/lh/$Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'a11', 'lh')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a12/lh/$Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'a12', 'lh')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b10/aa/$Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'b10', 'aa')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b11/aa/$Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'b11', 'aa')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b12/aa/$Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'b12', 'aa')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
             ],
             "properties": {
                 "action": {},
@@ -1162,6 +2607,358 @@
                 "filterType": "SqlFilter",
                 "sqlFilter": {
                     "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a10/bridge/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'a10', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='a10'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a11/bridge/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'a11', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='a11'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a12/bridge/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'a12', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='a12'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/a13/bridge/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'a13', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'a13')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='a13'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b10/bridge/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'b10', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='b10'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b11/bridge/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'b11', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='b11'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b12/bridge/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'b12', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='b12'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtoponeu_name'), '/b13/bridge/bridge')]",
+            "location": "North Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtoponeu_name'), 'b13', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtoponeu_name'), 'b13')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtoponeu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='b13'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a10/bridge/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'a10', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='a10'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a11/bridge/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'a11', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='a11'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a12/bridge/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'a12', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='a12'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/a13/bridge/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'a13', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'a13')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='a13'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b10/bridge/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'b10', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b10')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='b10'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b11/bridge/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'b11', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b11')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='b11'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b12/bridge/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'b12', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b12')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='b12'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('namespaces_cvtopoweu_name'), '/b13/bridge/bridge')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_cvtopoweu_name'), 'b13', 'bridge')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_cvtopoweu_name'), 'b13')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_cvtopoweu_name'))]"
+            ],
+            "properties": {
+                "action": {
+                    "sqlExpression": "set xbridge=1; set sys.to='b13'",
+                    "compatibilityLevel": 20
+                },
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "xbridge is null",
                     "compatibilityLevel": 20
                 }
             }

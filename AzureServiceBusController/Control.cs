@@ -15,7 +15,6 @@ namespace AzureServiceBusController
 {
     public class Control
     {
-        static ServiceBusConnection connection;
         static object connectionMutex = new object();
         static Dictionary<string, MessageSender> senders = new Dictionary<string, MessageSender>();
 
@@ -35,10 +34,10 @@ namespace AzureServiceBusController
             var msg = message.Clone();
             lock (connectionMutex)
             {
-                connection = new ServiceBusConnection(Environment.GetEnvironmentVariable("control-cxn"));
                 if (!senders.TryGetValue(message.To, out sender))
                 {
-                    sender = new MessageSender(connection, message.To);
+                    sender = new MessageSender(Environment.GetEnvironmentVariable("control-cxn"), message.To, 
+                        new RetryExponential(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(30), 10));
                     senders.Add(message.To, sender);
                 }
             }
@@ -63,57 +62,52 @@ namespace AzureServiceBusController
                         var name = create.Value<string>("name");
                         var topic = create.Value<string>("topic");
 
-                        switch (type?.ToLowerInvariant())
+                        try
                         {
-                            case "queue":
-                                if (!await mc.QueueExistsAsync(name))
-                                {
-                                    await mc.CreateQueueAsync(name);
-                                }
-                                break;
-                            case "topic":
-                                if (!await mc.TopicExistsAsync(name))
-                                {
-                                    await mc.CreateTopicAsync(name);
-                                }
-                                if (!await mc.SubscriptionExistsAsync(name, "bridge"))
-                                {
-                                    var sd = new SubscriptionDescription(name, "bridge")
+                            switch (type?.ToLowerInvariant())
+                            {
+                                case "queue":
+                                    if (!await mc.QueueExistsAsync(name))
                                     {
-                                        ForwardTo = "bridge"
-                                    };
-                                    var rl = new RuleDescription("bridge")
+                                        await mc.CreateQueueAsync(name);
+                                    }
+                                    break;
+                                case "topic":
+                                    await CreateTopicIfNotExist(mc, name);
+                                    break;
+                                case "subscription":
+                                    // if the topic doesn't exist, we'll create it 
+                                    await CreateTopicIfNotExist(mc, name);
+                                    if (!await mc.SubscriptionExistsAsync(topic, name))
                                     {
-                                        Filter = new SqlFilter("xbridge is null"),
-                                        Action = new SqlRuleAction($"set xbridge=1; set sys.to='{name}'")
-                                    };
-                                    await mc.CreateSubscriptionAsync(sd, rl);
-                                    
-                                }
-                                break;
-                            case "subscription":
-                                if (await mc.TopicExistsAsync(topic) && 
-                                    !await mc.SubscriptionExistsAsync(topic, name) )
-                                {
-                                    await mc.CreateSubscriptionAsync(topic, name);
-                                }
-                                break;
-                            case "link":
-                                if (await mc.TopicExistsAsync(topic) &&
-                                    !await mc.SubscriptionExistsAsync(topic, name) &&
-                                    await mc.QueueExistsAsync(name))
-                                {
-                                    var sd = new SubscriptionDescription(topic, name)
+                                        await mc.CreateSubscriptionAsync(topic, name);
+                                    }
+                                    break;
+                                case "link":
+                                    // if the topic doesn't exist, we'll create it 
+                                    await CreateTopicIfNotExist(mc, name);
+                                    if (!await mc.SubscriptionExistsAsync(topic, name) &&
+                                        await mc.QueueExistsAsync(name))
                                     {
-                                        ForwardTo = name
-                                    };
-                                    await mc.CreateSubscriptionAsync(sd);
-                                }
-                                break;
-                            default:
-                                log.LogError($"Don't know how to create '{type}'");
-                                return;
+                                        var sd = new SubscriptionDescription(topic, name)
+                                        {
+                                            ForwardTo = name
+                                        };
+                                        await mc.CreateSubscriptionAsync(sd);
+                                    }
+                                    break;
+                                default:
+                                    log.LogError($"Don't know how to create '{type}'");
+                                    return;
+                            }
                         }
+                        catch(MessagingEntityAlreadyExistsException)
+                        {
+                            // means we got into a race condition where two commands
+                            // tried to create the same entity concurrently. We'll
+                            // swallow this exception.
+                        }
+
                     }
                     break;
                 case "delete":
@@ -156,6 +150,27 @@ namespace AzureServiceBusController
                         }
                     }
                     break;
+            }
+        }
+
+        private static async Task CreateTopicIfNotExist(ManagementClient mc, string name)
+        {
+            if (!await mc.TopicExistsAsync(name))
+            {
+                await mc.CreateTopicAsync(name);
+            }
+            if (!await mc.SubscriptionExistsAsync(name, "bridge"))
+            {
+                var sd = new SubscriptionDescription(name, "bridge")
+                {
+                    ForwardTo = "bridge"
+                };
+                var rl = new RuleDescription("bridge")
+                {
+                    Filter = new SqlFilter("xbridge is null"),
+                    Action = new SqlRuleAction($"set xbridge=1; set sys.to='{name}'")
+                };
+                await mc.CreateSubscriptionAsync(sd, rl);
             }
         }
     }
