@@ -34,9 +34,9 @@ namespace ServiceBusControllerClient
             //entities.Add(new { type = "topic", name = "c11" });
             //entities.Add(new { type = "topic", name = "c12" });
             //entities.Add(new { type = "topic", name = "c13" });
-            entities.Add(new { type = "link", topic = "c10", name = "dl" });
-            entities.Add(new { type = "link", topic = "c11", name = "dl" });
-            entities.Add(new { type = "link", topic = "c12", name = "dl" });
+            entities.Add(new { type = "link", topic = "c20", name = "dl" });
+            entities.Add(new { type = "link", topic = "c21", name = "dl" });
+            entities.Add(new { type = "link", topic = "c22", name = "dl" });
 
 
             foreach (dynamic entity in entities)

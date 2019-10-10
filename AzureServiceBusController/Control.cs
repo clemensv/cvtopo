@@ -36,13 +36,14 @@ namespace AzureServiceBusController
             {
                 if (!senders.TryGetValue(message.To, out sender))
                 {
-                    sender = new MessageSender(Environment.GetEnvironmentVariable("control-cxn"), message.To, 
+                    sender = new MessageSender(Environment.GetEnvironmentVariable("control-cxn"), message.To,
                         new RetryExponential(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(30), 10));
                     senders.Add(message.To, sender);
                 }
             }
             msg.To = null;
-            await sender.SendAsync(msg);            
+            await sender.SendAsync(msg);
+            log.LogInformation($"Routed message to {message.To}");
         }
 
         [FunctionName("ControlHandler")]
@@ -50,7 +51,10 @@ namespace AzureServiceBusController
                                Message message, ILogger log)
         {
             if (message.Body == null)
+            {
+                log.LogError($"Message '{message.Label}' with empty body found.");
                 return;
+            }
 
             ManagementClient mc = new ManagementClient(Environment.GetEnvironmentVariable("control-cxn"));
             switch (message.Label?.ToLowerInvariant())
@@ -61,6 +65,8 @@ namespace AzureServiceBusController
                         var type = create.Value<string>("type");
                         var name = create.Value<string>("name");
                         var topic = create.Value<string>("topic");
+
+                        log.LogInformation($"Message '{message.Label}': type: {type}, name: {name}, topic: {topic}.");
 
                         try
                         {
@@ -73,19 +79,24 @@ namespace AzureServiceBusController
                                     }
                                     break;
                                 case "topic":
-                                    await CreateTopicIfNotExist(mc, name);
+                                    await CreateTopicIfNotExist(mc, name, log);
                                     break;
                                 case "subscription":
                                     // if the topic doesn't exist, we'll create it 
-                                    await CreateTopicIfNotExist(mc, topic);
+                                    await CreateTopicIfNotExist(mc, topic, log);
                                     if (!await mc.SubscriptionExistsAsync(topic, name))
                                     {
                                         await mc.CreateSubscriptionAsync(topic, name);
+                                        log.LogInformation($"Created subscription on {topic} named {name}");
+                                    }
+                                    else
+                                    {
+                                        log.LogInformation($"Skipped subscription on {topic} named {name}");
                                     }
                                     break;
                                 case "link":
                                     // if the topic doesn't exist, we'll create it 
-                                    await CreateTopicIfNotExist(mc, topic);
+                                    await CreateTopicIfNotExist(mc, topic, log);
                                     if (!await mc.SubscriptionExistsAsync(topic, name) &&
                                         await mc.QueueExistsAsync(name))
                                     {
@@ -94,20 +105,24 @@ namespace AzureServiceBusController
                                             ForwardTo = name
                                         };
                                         await mc.CreateSubscriptionAsync(sd);
+                                        log.LogInformation($"Created link {topic} to {name}");
                                     }
+                                    else
+                                    {
+                                        log.LogInformation($"Skipped creating link {topic} to {name}");
+                                    }
+
                                     break;
                                 default:
                                     log.LogError($"Don't know how to create '{type}'");
                                     return;
                             }
                         }
-                        catch(MessagingEntityAlreadyExistsException)
+                        catch (Exception e)
                         {
-                            // means we got into a race condition where two commands
-                            // tried to create the same entity concurrently. We'll
-                            // swallow this exception.
+                            log.LogError($"Exception handling message '{message.Label}': type: {type}, name: {name}, topic: {topic}; Exception {e}");
+                            throw;
                         }
-
                     }
                     break;
                 case "delete":
@@ -116,48 +131,64 @@ namespace AzureServiceBusController
                         var type = delete.Value<string>("type");
                         var name = delete.Value<string>("name");
                         var topic = delete.Value<string>("topic");
-                        switch (type?.ToLowerInvariant())
+
+                        log.LogInformation($"Message '{message.Label}': type: {type}, name: {name}, topic: {topic}.");
+
+                        try
                         {
-                            case "queue":
-                                if (await mc.QueueExistsAsync(name))
-                                {
-                                    await mc.DeleteQueueAsync(name);
-                                }
-                                break;
-                            case "topic":
-                                if (await mc.TopicExistsAsync(name))
-                                {
-                                    await mc.DeleteTopicAsync(name);
-                                }
-                                break;
-                            case "subscription":
-                                if (await mc.TopicExistsAsync(topic) && 
-                                    await mc.SubscriptionExistsAsync(topic, name))
-                                {
-                                    await mc.DeleteSubscriptionAsync(topic, name);
-                                }
-                                break;
-                            case "link":
-                                if (await mc.TopicExistsAsync(topic) && 
-                                    await mc.SubscriptionExistsAsync(topic, name))
-                                {
-                                    await mc.DeleteSubscriptionAsync(topic, name);
-                                }
-                                break;
-                            default:
-                                log.LogError($"Don't know how to delete '{type}'");
-                                return;
+                            switch (type?.ToLowerInvariant())
+                            {
+                                case "queue":
+                                    if (await mc.QueueExistsAsync(name))
+                                    {
+                                        await mc.DeleteQueueAsync(name);
+                                    }
+                                    break;
+                                case "topic":
+                                    if (await mc.TopicExistsAsync(name))
+                                    {
+                                        await mc.DeleteTopicAsync(name);
+                                    }
+                                    break;
+                                case "subscription":
+                                    if (await mc.TopicExistsAsync(topic) &&
+                                        await mc.SubscriptionExistsAsync(topic, name))
+                                    {
+                                        await mc.DeleteSubscriptionAsync(topic, name);
+                                    }
+                                    break;
+                                case "link":
+                                    if (await mc.TopicExistsAsync(topic) &&
+                                        await mc.SubscriptionExistsAsync(topic, name))
+                                    {
+                                        await mc.DeleteSubscriptionAsync(topic, name);
+                                    }
+                                    break;
+                                default:
+                                    log.LogError($"Don't know how to delete '{type}'");
+                                    return;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            log.LogError($"Exception handling message '{message.Label}': type: {type}, name: {name}, topic: {topic}; Exception {e}");
+                            throw;
                         }
                     }
                     break;
             }
         }
 
-        private static async Task CreateTopicIfNotExist(ManagementClient mc, string name)
+        private static async Task CreateTopicIfNotExist(ManagementClient mc, string name, ILogger log)
         {
             if (!await mc.TopicExistsAsync(name))
             {
                 await mc.CreateTopicAsync(name);
+                log.LogInformation($"Created topic {name}");
+            }
+            else
+            {
+                log.LogInformation($"Skipped topic {name}");
             }
             if (!await mc.SubscriptionExistsAsync(name, "bridge"))
             {
@@ -171,6 +202,11 @@ namespace AzureServiceBusController
                     Action = new SqlRuleAction($"set xbridge=1; set sys.to='{name}'")
                 };
                 await mc.CreateSubscriptionAsync(sd, rl);
+                log.LogInformation($"Created bridge subscription on {name}");
+            }
+            else
+            {
+                log.LogInformation($"Skipped bridge subscription on {name}");
             }
         }
     }
