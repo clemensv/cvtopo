@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBusControllerClient", "ServiceBusControllerClient\ServiceBusControllerClient.csproj", "{5E8935BC-431D-4ED9-9843-1837FE3ECF51}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBusActiveActiveController", "ServiceBusActiveActiveController\ServiceBusActiveActiveController.csproj", "{3196B6CC-884E-4701-B40A-35A534BDF145}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{34734AEE-989B-4478-8F8A-B82D13EC071B}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{86D1B0F1-60DF-45A7-86FD-E939C2BE1C23}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5E8935BC-431D-4ED9-9843-1837FE3ECF51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E8935BC-431D-4ED9-9843-1837FE3ECF51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E8935BC-431D-4ED9-9843-1837FE3ECF51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E8935BC-431D-4ED9-9843-1837FE3ECF51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3196B6CC-884E-4701-B40A-35A534BDF145}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3196B6CC-884E-4701-B40A-35A534BDF145}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3196B6CC-884E-4701-B40A-35A534BDF145}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3196B6CC-884E-4701-B40A-35A534BDF145}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3222139D-9925-4721-A8B9-A36B716D8D89}
+	EndGlobalSection
+EndGlobal

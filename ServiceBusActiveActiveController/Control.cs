@@ -20,15 +20,19 @@ namespace AzureServiceBusController
 
         [FunctionName("ControlImport")]
         [return: ServiceBus("%control-topic%", Connection = "control-cxn")]
-        public Message ControlImport([ServiceBusTrigger("%remote-control-topic%", "%remote-control-sub%", Connection = "remote-control-cxn")]
+        public Message ControlImport(
+            [ServiceBusTrigger("%remote-control-topic%", 
+                               "%remote-control-sub%", 
+                               Connection = "remote-control-cxn")]
                                Message message, ILogger log)
         {
             return message.Clone();
         }
 
         [FunctionName("Bridge")]
-        public async Task Bridge([ServiceBusTrigger("%remote-bridge-queue%", Connection = "remote-control-cxn")]
-                               Message message, ILogger log)
+        public async Task Bridge(
+            [ServiceBusTrigger("%remote-bridge-queue%", Connection = "remote-control-cxn")]
+            Message message, ILogger log)
         {
             MessageSender sender;
             var msg = message.Clone();
